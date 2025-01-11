@@ -6,7 +6,7 @@ import { Card, CardHeader, CardBody } from "@nextui-org/react";
 import { DoorOpen } from "lucide-react";
 
 // Helper function to format the timestamp into a readable format
-const formatDate = (timestamp) => {
+const formatDate = (timestamp: number) => {
     const date = new Date(timestamp);
     return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
 };
