@@ -24,7 +24,7 @@ const MqttClient = () => {
         };
 
         // Connect to MQTT broker over WebSocket
-        const mqttClient = mqtt.connect('ws://147.232.205.176:8000', options);
+        const mqttClient = mqtt.connect('wss://147.232.205.176:8000', options);
 
         mqttClient.on('connect', () => {
             console.log('MQTT connection successful');
