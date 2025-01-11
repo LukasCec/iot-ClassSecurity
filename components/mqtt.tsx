@@ -5,6 +5,13 @@ import mqtt from 'mqtt';
 import { Card, CardHeader, CardBody } from "@nextui-org/react";
 import { DoorOpen } from "lucide-react";
 
+// Define the type for the history data
+interface CardData {
+    card_id: string;
+    holder_name: string;
+    timestamp: number; // Assuming timestamp is a number (Unix timestamp)
+}
+
 // Helper function to format the timestamp into a readable format
 const formatDate = (timestamp: number) => {
     const date = new Date(timestamp);
@@ -13,8 +20,8 @@ const formatDate = (timestamp: number) => {
 
 const MqttClient = () => {
     const [isActivated, setIsActivated] = useState(false); // State to track the switch status
-    const [client, setClient] = useState(null); // MQTT client state
-    const [history, setHistory] = useState([]); // State to store visitor history
+    const [client, setClient] = useState<any>(null); // MQTT client state
+    const [history, setHistory] = useState<CardData[]>([]); // State to store visitor history
     const [doorStatus, setDoorStatus] = useState('closed'); // State for door status
 
     useEffect(() => {
@@ -46,7 +53,7 @@ const MqttClient = () => {
         mqttClient.on('message', (topic, message) => {
             // If message comes from a History card topic (e.g., History/Card1, History/Card2)
             if (topic.startsWith('kpi/kronos/temperature/LES/History/')) {
-                const cardData = JSON.parse(message.toString());
+                const cardData: CardData = JSON.parse(message.toString());
                 setHistory((prevHistory) => [cardData, ...prevHistory]); // Prepend the new card data to the history
             }
 
@@ -99,14 +106,10 @@ const MqttClient = () => {
                         {/* Switch positioned on the right side */}
                         <div
                             onClick={handleSwitchChange}
-                            className={`relative inline-block w-12 h-6 cursor-pointer rounded-full transition-all duration-300 ${
-                                isActivated ? 'bg-green-500' : 'bg-gray-600'
-                            }`}
+                            className={`relative inline-block w-12 h-6 cursor-pointer rounded-full transition-all duration-300 ${isActivated ? 'bg-green-500' : 'bg-gray-600'}`}
                         >
                             <div
-                                className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white transition-all duration-300 ${
-                                    isActivated ? 'transform translate-x-full' : ''
-                                }`}
+                                className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white transition-all duration-300 ${isActivated ? 'transform translate-x-full' : ''}`}
                             />
                         </div>
                     </CardHeader>
