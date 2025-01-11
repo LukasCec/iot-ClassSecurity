@@ -21,7 +21,7 @@ const formatDate = (timestamp: number) => {
 const MqttClient = () => {
     const [isActivated, setIsActivated] = useState(false); // State to track the switch status
     const [client, setClient] = useState<any>(null); // MQTT client state
-    const [history, setHistory] = useState<CardData[]>([]); // State to store visitor history
+    const [history, setHistory] = useState<CardData[]>([]); // Explicitly typing the history state
     const [doorStatus, setDoorStatus] = useState('closed'); // State for door status
 
     useEffect(() => {
