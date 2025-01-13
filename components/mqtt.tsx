@@ -5,17 +5,12 @@ import mqtt from 'mqtt';
 import { Card, CardHeader, CardBody } from "@nextui-org/react";
 import { DoorOpen } from "lucide-react";
 
-// Helper function to format the timestamp into a readable format
-const formatDate = (timestamp: number) => {
-    const date = new Date(timestamp);
-    return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
-};
-
 const MqttClient = () => {
-    const [isActivated, setIsActivated] = useState(false); // State to track the switch status
-    const [client, setClient] = useState<any>(null); // MQTT client state
-    const [history, setHistory] = useState<any[]>([]); // State to store visitor history
-    const [doorStatus, setDoorStatus] = useState('closed'); // State for door status
+    const [isActivated, setIsActivated] = useState(false);
+    const [client, setClient] = useState(null);
+    const [history, setHistory] = useState([]);
+    const [doorStatus, setDoorStatus] = useState('unknown');
+    const [windowsStatus, setWindowsStatus] = useState('unknown');
 
     useEffect(() => {
         const options = {
@@ -23,62 +18,74 @@ const MqttClient = () => {
             password: 'mother.mqtt.password',
         };
 
-        // Connect to MQTT broker over WebSocket
-        const mqttClient = mqtt.connect('wss://147.232.205.176:8000', options);
+        const mqttClient = mqtt.connect('ws://147.232.205.176:8000', options);
 
         mqttClient.on('connect', () => {
             console.log('MQTT connection successful');
-            // Subscribe to the History topic to listen for visitor data
-            mqttClient.subscribe('kpi/kronos/temperature/LES/History/#', (err) => {
-                if (err) {
-                    console.error('Error subscribing to History topic', err);
-                }
-            });
 
-            // Subscribe to the DoorStatus topic to listen for door status updates
-            mqttClient.subscribe('kpi/kronos/temperature/LES/DoorStatus', (err) => {
+            // Subscribe to the topic
+            mqttClient.subscribe('/kpi/kronos/security/megasupa', (err) => {
                 if (err) {
-                    console.error('Error subscribing to DoorStatus topic', err);
+                    console.error('Error subscribing to topic', err);
+                } else {
+                    console.log('Successfully subscribed to /kpi/kronos/security/megasupa');
                 }
             });
         });
 
         mqttClient.on('message', (topic, message) => {
-            // If message comes from a History card topic (e.g., History/Card1, History/Card2)
-            if (topic.startsWith('kpi/kronos/temperature/LES/History/')) {
-                const cardData = JSON.parse(message.toString());
-                setHistory((prevHistory) => [cardData, ...prevHistory]); // Prepend the new card data to the history
-            }
+            if (topic === '/kpi/kronos/security/megasupa') {
+                try {
+                    const data = JSON.parse(message.toString());
 
-            // If message comes from the DoorStatus topic
-            if (topic === 'kpi/kronos/temperature/LES/DoorStatus') {
-                const doorData = JSON.parse(message.toString());
-                setDoorStatus(doorData.status); // Update door status based on the MQTT message
+                    // Update states
+                    setIsActivated(data.activated ?? false);
+                    setDoorStatus(data.door?.status ?? 'unknown');
+
+                    // Aggregate window statuses
+                    if (data.windows && Array.isArray(data.windows)) {
+                        const windowStatus = data.windows.every(window => window.status === 'closed')
+                            ? 'closed'
+                            : 'open';
+                        setWindowsStatus(windowStatus);
+                    } else {
+                        setWindowsStatus('unknown');
+                    }
+
+                    setHistory(data.history ?? []);
+                } catch (err) {
+                    console.error('Error parsing MQTT message:', err);
+                }
             }
         });
 
-        setClient(mqttClient); // Store the client for later use
+        setClient(mqttClient);
 
         return () => {
-            mqttClient.end(); // Disconnect on component unmount
+            mqttClient.end();
         };
     }, []);
 
     const handleSwitchChange = () => {
-        setIsActivated(!isActivated); // Toggle the state of the switch
+        setIsActivated((prevState) => {
+            const newState = !prevState;
 
-        const topic = 'kpi/kronos/temperature/LES/DoorSecurity'; // Define the MQTT topic
-        const message = isActivated ? 'deactivated' : 'activated'; // Determine the message based on the switch state
-
-        if (client) {
-            client.publish(topic, message, { qos: 0, retain: false }, (err: Error | null) => {
-                if (err) {
-                    console.error('Error sending message:', err);
-                } else {
-                    console.log(`Message "${message}" sent successfully to topic: ${topic}`);
-                }
+            const payload = JSON.stringify({
+                activated: newState,
             });
-        }
+
+            if (client) {
+                client.publish('/kpi/kronos/security/megasupa', payload, { qos: 0, retain: false }, (err) => {
+                    if (err) {
+                        console.error('Error sending message:', err);
+                    } else {
+                        console.log(`Message "${payload}" sent successfully to topic.`);
+                    }
+                });
+            }
+
+            return newState;
+        });
     };
 
     return (
@@ -92,11 +99,10 @@ const MqttClient = () => {
                             <div className="flex flex-col">
                                 <p className="text-lg">Main Door</p>
                                 <p className="text-small text-default-500">
-                                    Status: {doorStatus === 'opened' ? 'Opened' : 'Closed'}
+                                    Status: {doorStatus === 'open' ? 'Opened' : 'Closed'}
                                 </p>
                             </div>
                         </div>
-                        {/* Switch positioned on the right side */}
                         <div
                             onClick={handleSwitchChange}
                             className={`relative inline-block w-12 h-6 cursor-pointer rounded-full transition-all duration-300 ${
@@ -121,8 +127,10 @@ const MqttClient = () => {
                         <div className="flex gap-3">
                             <DoorOpen className="text-white w-[50px] h-[50px]" />
                             <div className="flex flex-col">
-                                <p className="text-lg">Window 1</p>
-                                <p className="text-small text-default-500">Status: Closed</p>
+                                <p className="text-lg">Windows</p>
+                                <p className="text-small text-default-500">
+                                    Status: {windowsStatus}
+                                </p>
                             </div>
                         </div>
                     </CardHeader>
@@ -134,22 +142,23 @@ const MqttClient = () => {
 
             <h1 className="mt-6 font-bold text-2xl">History of Visitors:</h1>
             <div className="flex gap-5 mt-3">
-                {/* Table for Visitor History */}
                 <div className="w-[93%] bg-gray-800 px-3 py-2 rounded-lg">
                     <table className="w-full text-white">
                         <thead>
                         <tr className="border-b-3 border-b-gray-700">
-                            <th className="px-4 py-2">Card ID</th>
-                            <th className="px-4 py-2">Holder Name</th>
+                            <th className="px-4 py-2">Event</th>
+                            <th className="px-4 py-2">User</th>
                             <th className="px-4 py-2">Timestamp</th>
                         </tr>
                         </thead>
                         <tbody>
                         {history.map((entry, index) => (
                             <tr key={index}>
-                                <td className="text-center px-4 py-2">{entry.card_id}</td>
-                                <td className="text-center px-4 py-2">{entry.holder_name}</td>
-                                <td className="text-center px-4 py-2">{formatDate(entry.timestamp)}</td>
+                                <td className="text-center px-4 py-2">{entry.event}</td>
+                                <td className="text-center px-4 py-2">{entry.user}</td>
+                                <td className="text-center px-4 py-2">
+                                    {new Date(entry.timestamp).toLocaleString()}
+                                </td>
                             </tr>
                         ))}
                         </tbody>
