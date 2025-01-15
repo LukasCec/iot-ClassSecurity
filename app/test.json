@@ -1,0 +1,32 @@
+kronos/security/megasupa/door:
+
+{
+  "state": "secured" | "unsecured" | "unauthorized",
+  "dt": "2024-12-10T09:27:28.323Z",
+  "status": "closed"
+  "history": [
+    {
+      "event": "secured door",
+      "dt": "2024-12-10T09:27:28.323Z",
+      "user": "Matko",
+      "card": "1234567890"
+    }
+  ]
+}
+
+kronos/security/megasupa/windows:
+
+{
+  "activated": false,
+  "dt": "2024-12-10T09:27:28.323Z",
+    "windows" : [
+        {
+            "id": 1,
+            "status": "open"
+        },
+        {
+            "id": 2,
+            "status": "closed"
+        }
+    ]
+}
