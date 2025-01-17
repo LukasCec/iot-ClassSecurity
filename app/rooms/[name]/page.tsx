@@ -1,12 +1,13 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { User } from "lucide-react"; // Import the User icon from Lucide React
+import Link from "next/link"; // Import Link for navigation
+import {User, Home, ChevronLeft} from "lucide-react"; // Import User and Home icons
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@nextui-org/react";
 import Toggle from "@/components/ui/toggle";
-import Slider from "@/components/ui/slider";
 import CalendarRow from "@/components/ui/CalendarRow";
 import StatusIndicator from "@/components/ui/status-indicator";
+import {TempChart} from "@/components/ui/temp";
 
 export default function RoomPage() {
   const params = useParams<{ name: string }>();
@@ -35,17 +36,26 @@ export default function RoomPage() {
       <div className="relative flex h-screen font-sans">
         {/* Navbar */}
         <nav className="fixed top-0 left-0 w-full h-32 bg-white flex z-10 shadow shadow-accent items-center justify-between px-16">
-          {/* Room Name on the Left */}
-          <div className="text-gray-900 font-bold text-3xl">{name.toUpperCase()} <span className="text-xl font-thin">Classroom</span></div>
+          {/* Room Name and Home Button on the Left */}
+          <div className="flex items-center space-x-4">
+            <Link href="/rooms/" className="flex items-center space-x-2 border border-gray-900 hover:scale-[105%] duration-300 rounded-[20px] p-3 text-gray-900 hover:text-gray-700">
+
+              <ChevronLeft className="w-6 h-6" />
+            </Link>
+            <div className="text-gray-900 font-bold text-3xl">
+              {name.toUpperCase()} <span className="text-xl font-thin">Classroom</span>
+            </div>
+          </div>
 
           {/* Logged-in User on the Right with Icon and Dropdown */}
           <div className="flex items-center space-x-4">
-            {/* User Icon and Dropdown */}
             <Dropdown>
               <DropdownTrigger>
                 <div className="flex items-center cursor-pointer space-x-2">
                   <User className="w-6 h-6 text-gray-800" />
-                  <span className="font-semibold text-gray-700 border-gray-400 border-2 py-1 px-3 rounded-[10px]">Admin</span>
+                  <span className="font-semibold text-gray-700 border-gray-400 border-2 py-1 px-3 rounded-[10px]">
+                  Admin
+                </span>
                 </div>
               </DropdownTrigger>
               <DropdownMenu aria-label="User menu" className="bg-neutral-50 p-6 rounded-[10px]">
@@ -62,7 +72,7 @@ export default function RoomPage() {
           <img
               src={roomImageUrl}
               alt={`Room ${name}`}
-              className="absolute inset-0 h-full w-full  object-cover mb-12"
+              className="absolute inset-0 h-full w-full object-cover mb-12"
           />
         </div>
 
@@ -74,8 +84,11 @@ export default function RoomPage() {
           <CalendarRow />
           <div className="space-y-6 mt-6">
             <Toggle label="Lights" />
+            <TempChart/>
           </div>
         </div>
       </div>
   );
 }
+
+
