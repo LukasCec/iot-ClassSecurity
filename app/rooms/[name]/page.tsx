@@ -5,9 +5,9 @@ import Link from "next/link"; // Import Link for navigation
 import {User, Home, ChevronLeft} from "lucide-react"; // Import User and Home icons
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@nextui-org/react";
 import Toggle from "@/components/ui/toggle";
-import CalendarRow from "@/components/ui/CalendarRow";
-import StatusIndicator from "@/components/ui/status-indicator";
-import {TempChart} from "@/components/ui/temp";
+import CalendarRow from "@/components/CalendarRow";
+import StatusIndicator from "@/components/StatusIndicator";
+import {TempChart} from "@/components/TempHumCharts";
 
 export default function RoomPage() {
   const params = useParams<{ name: string }>();
@@ -83,7 +83,6 @@ export default function RoomPage() {
           <StatusIndicator status="online" />
           <CalendarRow />
           <div className="space-y-6 mt-6">
-            <Toggle label="Lights" />
             <TempChart/>
           </div>
         </div>

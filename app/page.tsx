@@ -1,4 +1,4 @@
-import MqttClient from "../components/mqtt";
+import MqttClient from "../components/Mqtt";
 
 export default function Home() {
   return (
