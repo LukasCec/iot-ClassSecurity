@@ -4,6 +4,12 @@ module.exports = {
   content: ["app/**/*.{ts,tsx}", "components/**/*.{ts,tsx}"],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Poppins', 'sans-serif'], // Use Poppins as the primary sans-serif font
+      },
+      boxShadow: {
+        'white-shadow': '0 40px 20px rgba(255, 255, 255, 0.9)', // Custom white shadow
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
