@@ -8,7 +8,7 @@ module.exports = {
         sans: ['Poppins', 'sans-serif'], // Use Poppins as the primary sans-serif font
       },
       boxShadow: {
-        'white-shadow': '0 40px 20px rgba(255, 255, 255, 0.9)', // Custom white shadow
+        'black-shadow': '20 40px 20px rgb(50, 50, 50)', // Custom white shadow
       },
       colors: {
         border: "hsl(var(--border))",
