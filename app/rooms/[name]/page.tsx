@@ -3,7 +3,6 @@
 import { useParams } from "next/navigation";
 import Link from "next/link"; // Import Link for navigation
 import { User, Home, ChevronLeft } from "lucide-react"; // Import User and Home icons
-import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 
 import CalendarRow from "@/components/CalendarRow";
@@ -13,6 +12,9 @@ import { DoorStatusWidget } from "@/components/DoorStatusWidget";
 import { WindowStatusWidget } from "@/components/WindowStatusWidget";
 import { HistoryWidget } from "@/components/HistoryWidget";
 import mqtt from "mqtt";
+
+import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default function RoomPage() {
   const params = useParams<{ name: string }>();
@@ -39,6 +41,7 @@ export default function RoomPage() {
   }
 
   const roomImageUrl = `/images/rooms/${name}.png`;
+  console.log("roomImageUrl", roomImageUrl);
   const mqttConfig = {
     mqttUrl: "ws://147.232.205.176:8000",
     username: "maker",
@@ -89,9 +92,14 @@ export default function RoomPage() {
       dt: new Date().toISOString(),
     });
 
-    mqttClient.publish(mqttConfig.topic, payload, { qos: 0, retain: false }, (err) => {
-      if (err) console.error("Error publishing status:", err);
-    });
+    mqttClient.publish(
+      mqttConfig.topic,
+      payload,
+      { qos: 0, retain: false },
+      (err) => {
+        if (err) console.error("Error publishing status:", err);
+      }
+    );
 
     mqttClient.end();
   };
@@ -104,45 +112,32 @@ export default function RoomPage() {
   };
 
   return (
-      <div className="relative flex h-screen font-sans">
-        {/* Navbar */}
-        <nav className="fixed top-0 left-0 w-full h-32 bg-white flex z-10 shadow shadow-accent items-center justify-between px-16">
-          <div className="flex items-center space-x-4">
-            <Link
-                href="/rooms/"
-                className="flex items-center space-x-2 border border-gray-900 hover:scale-[105%] duration-300 rounded-[20px] p-3 text-gray-900 hover:text-gray-700"
-            >
-              <ChevronLeft className="w-6 h-6" />
+    <div className="font-sans">
+      <nav className="fixed top-0 dark:bg-background left-0 w-full h-16 bg-white flex z-10 shadow shadow-accent items-center justify-between px-5">
+        {/* Room Name and Home Button on the Left */}
+        <div className="flex items-center space-x-5">
+          <Button variant="outline" size="icon" className="rounded-full">
+            <Link href="/rooms/">
+              <ChevronLeft />
             </Link>
-            <div className="text-gray-900 font-bold text-3xl">
-              {name.toUpperCase()} <span className="text-xl font-thin">Classroom</span>
-            </div>
+          </Button>
+          <div className="text-gray-900 dark:text-white font-bold text-lg sm:text-3xl">
+            {name.toUpperCase()}{" "}
+            <span className="text-lg font-thin dark:text-gray-300">
+              Classroom
+            </span>
           </div>
-          <div className="flex items-center space-x-4">
-            <Dropdown>
-              <DropdownTrigger>
-                <div className="flex items-center cursor-pointer space-x-2">
-                  <User className="w-6 h-6 text-gray-800" />
-                  <span className="font-semibold text-gray-700 border-gray-400 border-2 py-1 px-3 rounded-[10px]">
-                  Admin
-                </span>
-                </div>
-              </DropdownTrigger>
-              <DropdownMenu aria-label="User menu" className="bg-neutral-50 p-6 rounded-[10px]">
-                <DropdownItem key="profile">Profile</DropdownItem>
-                <DropdownItem key="settings">Settings</DropdownItem>
-                <DropdownItem key="logout">Logout</DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-          </div>
-        </nav>
+        </div>
 
-        {/* Room Image Section */}
-        <div className="flex-grow relative bg-gray-200 mt-32">
+        <ThemeToggle />
+      </nav>
+
+      <div className="flex gap-4 p-4 mt-16">
+        <div className="flex-grow relative">
           <img
-              src={roomImageUrl}
-              alt={`Room ${name}`}
-              className="absolute inset-0 h-full w-full object-cover mb-12"
+            src={roomImageUrl}
+            alt={`Room ${name}`}
+            className="absolute inset-0 h-full w-full object-cover mb-12 rounded-md border"
           />
           <div className="absolute top-4 right-10 space-y-4">
             <DoorStatusWidget {...mqttConfig} />
@@ -150,18 +145,20 @@ export default function RoomPage() {
           </div>
         </div>
 
-        {/* Control Panel Section */}
-        <div className="w-1/3 bg-white p-16 overflow-y-auto m-6 rounded-[50px] hover:scale-[101%] duration-300 pt-24 mt-40 mb-8">
-          <h2 className="text-[50px] font-thin">Smart Class</h2>
-          <h3 className="text-2xl font-extrabold">Security Systems</h3>
-          <StatusIndicator status="online" />
+        <div className="bg-white dark:bg-background p-6 space-y-7 overflow-y-auto rounded-[35px] border">
+          <h2 className="text-3xl font-thin dark:text-white">Smart Class</h2>
+          <div className="flex flex-row justify-between items-center">
+            <h3 className="text-2xl font-extrabold dark:text-white">
+              Security Status
+            </h3>
+            <StatusIndicator status="activated" />
+          </div>
           <CalendarRow />
           <div className="space-y-6 mt-6">
             <TempChart />
-            <HistoryWidget {...mqttConfig} />
-
           </div>
         </div>
       </div>
+    </div>
   );
 }
