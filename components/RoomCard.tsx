@@ -5,7 +5,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 
 export default function RoomCard({ name, image, tempc }) {
   return (
-    <Card className="w-auto group relative space-y-4 overflow-hidden">
+    <Card className="w-auto group rounded-[50px] hover:scale-[102%] duration-300 relative space-y-4 overflow-hidden">
       <figure className="group-hover:opacity-90">
         <Image
           className="aspect-square w-full"
@@ -18,7 +18,7 @@ export default function RoomCard({ name, image, tempc }) {
       <CardContent className="px-4 py-0">
         <div className="flex justify-between">
           <div>
-            <h3 className="text-xl uppercase">
+            <h3 className="text-xl pl-5 uppercase">
               <Link href={"rooms/" + name.toLowerCase()}>
                 <span aria-hidden="true" className="absolute inset-0" />
                 {name}

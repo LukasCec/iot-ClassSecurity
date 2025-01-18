@@ -1,0 +1,26 @@
+{
+  "activated": false,
+  "dt": "2025-01-13T09:49:24.829Z",
+  "door": {
+    "status": "open"
+  },
+  "windows": [
+    {
+      "status": "open"
+    }
+  ],
+  "history": [
+    {
+      "event": "door opened",
+      "timestamp": "2025-01-13T09:49:21.950Z",
+      "user": "Luky",
+      "card": "1234567890"
+    },
+    {
+      "event": "door opened",
+      "timestamp": "2025-01-13T09:49:24.829Z",
+      "user": "Matejko",
+      "card": "1234567890"
+    }
+  ]
+}
