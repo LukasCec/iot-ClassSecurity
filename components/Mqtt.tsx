@@ -72,23 +72,18 @@ const MqttClient = () => {
       const newState = !prevState;
 
       const payload = JSON.stringify({
-        activated: newState,
+        user: "Matejko",
+        status: newState ? "secured" : "unsecured",
+        event: "door opened",
+        card: "123456",
         dt: new Date().toISOString(),
-        status: newState ? "open" : "closed",
-        history: [
-          ...history,
-          {
-            event: newState ? "door opened" : "door closed",
-            dt: new Date().toISOString(),
-          },
-        ],
       });
 
       if (client) {
         client.publish(
           "kpi/kronos/security/megasupa/door",
           payload,
-          { qos: 0, retain: false },
+          { qos: 0, retain: true },
           (err) => {
             if (err) {
               console.error("Error sending message:", err);
