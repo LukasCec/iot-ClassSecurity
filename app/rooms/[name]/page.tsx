@@ -307,7 +307,7 @@ export default function RoomPage() {
         <ThemeToggle />
       </nav>
 
-      <div className="h-screen flex flex-col lg:flex-row p-4 gap-4">
+      <div className="h-full flex flex-col lg:flex-row p-4 gap-4">
         <div className="flex-grow relative bg-gray-200 mt-16 rounded-lg hidden lg:block">
           <img
             src={roomImageUrl}
