@@ -5,47 +5,47 @@ export default function Rooms() {
     {
       name: "Kronos",
       image: "/images/rooms/kronos.png",
-      tempc: "23",
+      status: "secured",
     },
     {
       name: "Caprica",
       image: "/images/rooms/caprica.png",
-      tempc: "23",
+      status: "unsecured",
     },
     {
       name: "Endor",
       image: "/images/rooms/endor.png",
-      tempc: "23",
+      status: "unsecured",
     },
     {
       name: "Vulcan",
       image: "/images/rooms/vulcan.png",
-      tempc: "23",
+      status: "unsecured",
     },
     {
       name: "Abydos",
       image: "/images/rooms/abydos.png",
-      tempc: "23",
+      status: "unsecured",
     },
     {
       name: "Dune",
       image: "/images/rooms/dune.png",
-      tempc: "23",
+      status: "unsecured",
     },
     {
       name: "Romulus",
       image: "/images/rooms/romulus.png",
-      tempc: "23",
+      status: "unsecured",
     },
     {
       name: "Solaris",
       image: "/images/rooms/solaris.png",
-      tempc: "23",
+      status: "unsecured",
     },
     {
       name: "Hyperion",
       image: "/images/rooms/hyperion.png",
-      tempc: "23",
+      status: "unsecured",
     },
   ];
 

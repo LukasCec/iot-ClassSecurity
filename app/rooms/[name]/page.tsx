@@ -335,7 +335,7 @@ export default function RoomPage() {
                 door.status == "unauthorized" && "bg-red-200 border-red-500"
               } ${door.event == "Card rejected" && "border-red-500"}`}
             >
-              <LockOpen className="text-gray-500" />
+              <LockOpen className="text-gray-500 dark:text-gray-300" />
               <Switch
                 id="door-switch"
                 checked={
@@ -352,7 +352,7 @@ export default function RoomPage() {
                   updateSecurityStatus();
                 }}
               />
-              <Lock className="text-gray-500" />
+              <Lock className="text-gray-500 dark:text-gray-300" />
             </div>
           </div>
 
@@ -472,8 +472,8 @@ export default function RoomPage() {
             </div>
           </div>
 
-          <div className="pb-2 border-b-2">
-            <div className="flex flex-row justify-between pb-2">
+          <div className="pb-4 border-b-2">
+            <div className="flex flex-row justify-between">
               <div className="w-full">
                 <h3 className="text-lg xl:text-xl font-extrabold dark:text-white pb-4">
                   Latest Activity
