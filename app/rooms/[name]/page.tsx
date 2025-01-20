@@ -6,7 +6,6 @@ import { CircleAlert, ChevronLeft, Lock, LockOpen, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { formatDateTime } from "@/lib/formatDateTime";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { FormEvent } from "react";
 
 import CalendarRow from "@/components/CalendarRow";
 import StatusIndicator from "@/components/StatusIndicator";
@@ -24,7 +23,6 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogFooter,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
