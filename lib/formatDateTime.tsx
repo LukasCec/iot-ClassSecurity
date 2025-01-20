@@ -1,11 +1,17 @@
-export const formatDateTime = (dateTime) => {
+export const formatDateTime = (dateTime: string): string => {
   const date = new Date(dateTime); // Parse the date string into a Date object
 
-  // Extract date components
-  const options = { month: "short", day: "numeric", year: "numeric" }; // Month in 'Jan' format
+  // Define the options type explicitly
+  const options: Intl.DateTimeFormatOptions = {
+    month: "short", // e.g., "Jan"
+    day: "numeric",
+    year: "numeric",
+  };
+
+  // Format the date
   const formattedDate = date.toLocaleDateString("en-US", options);
 
-  // Extract time
+  // Format the time
   const time = date.toLocaleTimeString("en-US", {
     hour12: false, // Use 24-hour format
     hour: "2-digit",

@@ -40,6 +40,7 @@ export default function RoomPage() {
     card: "",
   });
   const [windowData, setWindowData] = useState({
+    name: "",
     status: "",
     dt: new Date().toISOString(),
     event: "",
@@ -146,7 +147,7 @@ export default function RoomPage() {
 
   const fetchSecurityWindowData = () => {
     mqttClient.on("connect", () => {
-      mqttClient.subscribe(mqttConfig.topicDoor, (err) => {
+      mqttClient.subscribe(mqttConfig.topicWindow, (err) => {
         if (err) console.error("Subscription error:", err);
       });
     });
@@ -156,7 +157,7 @@ export default function RoomPage() {
         try {
           const data = JSON.parse(message.toString());
           setWindowData(data);
-          console.log("Window data function", data);
+          console.log("Window data function", windowData);
         } catch (err) {
           console.error("Error parsing MQTT message:", err);
         }
@@ -344,7 +345,10 @@ export default function RoomPage() {
                     : true
                 }
                 onCheckedChange={(checked) =>
-                  setDoor({ status: checked ? "secured" : "unsecured" })
+                  setDoor((prevDoor) => ({
+                    ...prevDoor,
+                    status: checked ? "secured" : "unsecured",
+                  }))
                 }
                 onClick={() => {
                   updateSecurityStatus();
