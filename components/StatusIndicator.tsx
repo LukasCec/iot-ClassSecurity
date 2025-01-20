@@ -1,9 +1,9 @@
 type StatusIndicatorProps = {
-  status: "activated" | "deactivated";
+  status: "secured" | "unsecured";
 };
 
 export default function StatusIndicator({ status }: StatusIndicatorProps) {
-  const color = status === "activated" ? "bg-blue-500" : "bg-red-500";
+  const color = status === "secured" ? "bg-red-500" : "bg-blue-500";
 
   return (
     <div className="flex items-center space-x-2">

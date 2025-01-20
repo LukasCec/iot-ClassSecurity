@@ -81,7 +81,7 @@ const MqttClient = () => {
 
       if (client) {
         client.publish(
-          "kpi/kronos/security/megasupa/door",
+          "kpi/kronos/security/door",
           payload,
           { qos: 0, retain: true },
           (err) => {
